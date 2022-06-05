@@ -1,4 +1,4 @@
-option(OPT_WARNS_AS_ERR "The warnings are considered as error" ON)
+option(OPT_WARNS_AS_ERR "The warnings are considered as error" OFF)
 
 if (USING_MSVC)
     set(WARNS

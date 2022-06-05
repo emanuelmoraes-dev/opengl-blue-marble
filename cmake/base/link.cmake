@@ -3,3 +3,9 @@ target_link_libraries(
     PRIVATE
         base
 )
+
+target_include_directories(
+    main
+    PRIVATE
+        libs/glm
+)

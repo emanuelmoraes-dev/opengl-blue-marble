@@ -1,8 +1,9 @@
 #include <iostream>
-
-using namespace std;
+#include <glm/glm.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 int main() {
-    cout << "Hello World!" << endl;
+    glm::vec3 v {1, 2, 3};
+    std::cout << glm::to_string(v) << std::endl;
     return 0;
 }
