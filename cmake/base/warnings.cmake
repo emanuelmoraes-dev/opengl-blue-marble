@@ -3,6 +3,7 @@ option(OPT_WARNS_AS_ERR "The warnings are considered as error" OFF)
 if (USING_MSVC)
     set(WARNS
         /W4
+        /wd4201
     )
 
     set(WARNS_AS_ERR
