@@ -9,6 +9,12 @@ target_sources(
         src/main.cc
 )
 
+target_include_directories(
+    BlueMarble
+    PRIVATE
+        src/headers
+)
+
 target_compile_features(
     BlueMarble
     PUBLIC
