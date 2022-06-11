@@ -1,4 +1,4 @@
-[*.{c,h}]
+[*.{cc,hh}]
 trim_trailing_whitespace = true
 end_of_line=lf
 indent_style = space
