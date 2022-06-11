@@ -33,6 +33,7 @@ if (WIN32)
         PRIVATE
             glfw3.lib
             glew32.lib
+            opengl32.lib
     )
 else()
     # linux

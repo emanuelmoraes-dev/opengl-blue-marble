@@ -7,6 +7,7 @@ target_sources(
     BlueMarble
     PRIVATE
         src/main.cc
+        src/info.cc
 )
 
 target_include_directories(
