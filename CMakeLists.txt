@@ -8,6 +8,8 @@ target_sources(
     PRIVATE
         src/main.cc
         src/info.cc
+        src/scenes.cc
+        src/scenes/single_triangule_1.cc
 )
 
 target_include_directories(
