@@ -7,7 +7,6 @@
 #include <glm/glm.hpp>
 
 void drawScene(GLuint vertexBuffer, GLuint drawIndex, GLuint drawSize, GLuint vertexIndex, GLuint vertexSize);
-
-GLuint sceneSingleTriangule1(std::array<glm::vec3, 3> const& triangule);
+GLuint sceneSingleTriangules(GLsizeiptr size, const void* triangule);
 
 #endif

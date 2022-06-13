@@ -37,17 +37,28 @@ int main() {
 
     glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 
-    std::array<glm::vec3, 3> triangule {
+    // std::array<glm::vec3, 3> triangule {
+    //     glm::vec3 { -1.0f, -1.0f, 0.0f },
+    //     glm::vec3 {  1.0f, -1.0f, 0.0f },
+    //     glm::vec3 {  0.0f,  1.0f, 0.0f }
+    // };
+
+    std::array<glm::vec3, 6> triangule {
         glm::vec3 { -1.0f, -1.0f, 0.0f },
         glm::vec3 {  1.0f, -1.0f, 0.0f },
-        glm::vec3 {  0.0f,  1.0f, 0.0f }
+        glm::vec3 {  0.0f,  1.0f, 0.0f },
+
+        glm::vec3 { -1.0f,  1.0f, 0.0f },
+        glm::vec3 {  1.0f,  1.0f, 0.0f },
+        glm::vec3 {  0.0f, -1.0f, 0.0f }
     };
 
-    GLuint trianguleBuffer = sceneSingleTriangule1(triangule);
+    GLuint trianguleBuffer = sceneSingleTriangules(sizeof(triangule), triangule.data());
 
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
-        drawScene(trianguleBuffer, 0, 3, 0, 3);
+        // drawScene(trianguleBuffer, 0, 3, 0, 3);
+        drawScene(trianguleBuffer, 0, 6, 0, 3);
 
         glfwPollEvents();
         glfwSwapBuffers(window);

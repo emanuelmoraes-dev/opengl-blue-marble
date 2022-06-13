@@ -9,7 +9,7 @@ target_sources(
         src/main.cc
         src/info.cc
         src/scenes.cc
-        src/scenes/single_triangule_1.cc
+        src/scenes/single_triangule.cc
 )
 
 target_include_directories(
