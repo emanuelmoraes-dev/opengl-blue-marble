@@ -1,8 +1,8 @@
 #ifndef _OPENGL_BLUE_MARBLE_WINDOW_HH_INCLUDED_
 #define _OPENGL_BLUE_MARBLE_WINDOW_HH_INCLUDED_
 
-#define BMW_WIDTH (800)
-#define BMW_HEIGHT (600)
-#define BMW_TITLE "Blue Marble"
+#define BM_WINDOW_WIDTH (800)
+#define BM_WINDOW_HEIGHT (600)
+#define BM_WINDOW_TITLE "Blue Marble"
 
 #endif

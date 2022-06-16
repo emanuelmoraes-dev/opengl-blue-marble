@@ -25,7 +25,7 @@ glm::mat4 buildModelViewProjection() {
 
     // Projection
     constexpr float fov = glm::radians(45.0f);
-    constexpr float aspect = BMW_WIDTH / BMW_HEIGHT;
+    constexpr float aspect = BM_WINDOW_WIDTH / BM_WINDOW_HEIGHT;
     constexpr float near = 0.01f;
     constexpr float far = 1000.0f;
     const glm::mat4 projection = glm::perspective(fov, aspect, near, far);
@@ -45,22 +45,22 @@ int main() {
 
     err = glfwInit();
     if (err != GLFW_TRUE) {
-        CERR(BME_GLFW_INIT, err);
-        return BME_GLFW_INIT;
+        CERR(BM_ERR_GLFW_INIT, err);
+        return BM_ERR_GLFW_INIT;
     }
 
-    GLFWwindow* window = glfwCreateWindow(BMW_WIDTH, BMW_HEIGHT, BMW_TITLE, nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(BM_WINDOW_WIDTH, BM_WINDOW_HEIGHT, BM_WINDOW_TITLE, nullptr, nullptr);
     if (window == nullptr) {
-        CERR(BME_WINDOW, err);
-        return BME_WINDOW;
+        CERR(BM_ERR_WINDOW, err);
+        return BM_ERR_WINDOW;
     }
 
     glfwMakeContextCurrent(window);
 
     err = glewInit();
     if (err != GLEW_OK) {
-        CERR(BME_GLEW_INIT, err);
-        return BME_GLEW_INIT;
+        CERR(BM_ERR_GLEW_INIT, err);
+        return BM_ERR_GLEW_INIT;
     }
 
     coutAllInfo();

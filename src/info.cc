@@ -11,13 +11,13 @@ void coutGlVersion() {
 
     if (glMajorVersion == -1 || glMinorVersion == -1) {
         CERR_PANIC("OpenGL version could not be obtained!");
-        exit(BME_PANIC);
+        exit(BM_ERR_PANIC);
     }
 
     const GLubyte* glFullVersion = glGetString(GL_VERSION);
     if (glFullVersion == nullptr) {
         CERR_PANIC("Full OpenGL version could not be obtained!");
-        exit(BME_PANIC);
+        exit(BM_ERR_PANIC);
     }
 
     std::cout << "OpenGL version: " << glMajorVersion << "." << glMinorVersion << std::endl;
@@ -29,7 +29,7 @@ void coutGlslVersion() {
 
     if (glslVersion == nullptr) {
         CERR_PANIC("GLSF VERSION could not be obtained!");
-        exit(BME_PANIC);
+        exit(BM_ERR_PANIC);
     }
 
     std::cout << "GLSF version: " << glslVersion << std::endl;
@@ -40,7 +40,7 @@ void coutGlVendor() {
 
     if (glVendor == nullptr) {
         CERR_PANIC("OpenGL vendor could not be obtained!");
-        exit(BME_PANIC);
+        exit(BM_ERR_PANIC);
     }
 
     std::cout << "OpenGL vendor: " << glVendor << std::endl;
@@ -51,7 +51,7 @@ void coutGlRenderer() {
 
     if (glRenderer == nullptr) {
         CERR_PANIC("OpenGL renderer could not be obtained!");
-        exit(BME_PANIC);
+        exit(BM_ERR_PANIC);
     }
 
     std::cout << "OpenGL vendor: " << glRenderer << std::endl;
