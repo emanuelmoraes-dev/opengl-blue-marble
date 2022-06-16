@@ -1,4 +1,5 @@
-/build/
+# Environment
+/env/**/env.hh
 
 # IDEs
 /.vscode/
@@ -34,6 +35,7 @@
 *.dylib
 
 # Executables
+/build/
 *.exe
 *.out
 *.app

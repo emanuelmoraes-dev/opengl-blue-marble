@@ -11,6 +11,7 @@
 #include "window.hh"
 #include "info.hh"
 #include "scenes.hh"
+#include "env.hh"
 
 glm::mat4 buildModelViewProjection() {
     // Model

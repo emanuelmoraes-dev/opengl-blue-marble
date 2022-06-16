@@ -16,6 +16,8 @@ target_include_directories(
     BlueMarble
     PRIVATE
         src/headers
+        # debug env/debug
+        # optimized env/release
 )
 
 target_compile_features(
@@ -25,3 +27,5 @@ target_compile_features(
 )
 
 include(cmake/base.cmake)
+include(cmake/debug.cmake)
+include(cmake/release.cmake)
