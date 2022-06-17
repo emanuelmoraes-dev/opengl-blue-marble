@@ -5,10 +5,12 @@ OpenGL project to show the Earth
 To be able to compile the source code, follow the instructions below
 
 ### Dependencies
+* [OpenGL](https://www.opengl.org)
+  * Note: It is possible that your operating system already provides this library
 * [GLEW](http://glew.sourceforge.net)
-  * Note: For Windows environments extract the zip in "lib/glew"
+  * Note: For Windows environments extract in "libs/glew"
 * [GLFW](https://www.glfw.org)
-  * Note: For Windows environments extract the zip in "lib/glfw"
+  * Note: For Windows environments extract in "libs/glfw"
 
 ### Configuring Environment
 Copy the file "env/env.example.hh" in "env/debug/env.hh" and "env/release/env.hh" with the configuration for debug and release environments respectively
