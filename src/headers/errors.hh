@@ -19,4 +19,7 @@
 #define BM_ERR_GLEW_INIT (__BM_ERRBASE + 3)
 #define BM_ERR_GLEW_INIT_MESSAGE "The GLEW wasn't initialized"
 
+#define BM_ERR_FILE_NOT_FOUND (__BM_ERRBASE + 4)
+#define BM_ERR_FILE_NOT_FOUND_MESSAGE "File not found"
+
 #endif

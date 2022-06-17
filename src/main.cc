@@ -1,5 +1,6 @@
 #include <iostream>
 #include <array>
+#include <string>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -11,7 +12,8 @@
 #include "window.hh"
 #include "info.hh"
 #include "scenes.hh"
-#include "env.hh"
+#include "shaders.hh"
+#include "fs.hh"
 
 glm::mat4 buildModelViewProjection() {
     // Model
@@ -74,6 +76,15 @@ int main() {
         glm::vec3 {  1.0f, -1.0f, 0.0f },
         glm::vec3 {  0.0f,  1.0f, 0.0f }
     };
+
+    std::string trianguleVertShader;
+    err = readFile(BM_SHADER_VERT_TRIANGULE, trianguleVertShader);
+    if (err != 0) {
+        CERR(BM_ERR_FILE_NOT_FOUND, err);
+        return BM_ERR_FILE_NOT_FOUND;
+    }
+
+    std::cout << trianguleVertShader << std::endl;
 
     for (glm::vec3& vertex : triangule)
         applyCpuModelViewProjection(vertex, modelViewProjection);

@@ -8,6 +8,7 @@ target_sources(
     PRIVATE
         src/main.cc
         src/info.cc
+        src/fs.cc
         src/scenes.cc
         src/scenes/single_triangule.cc
 )
@@ -16,8 +17,6 @@ target_include_directories(
     BlueMarble
     PRIVATE
         src/headers
-        # debug env/debug
-        # optimized env/release
 )
 
 target_compile_features(
