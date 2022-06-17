@@ -9,6 +9,7 @@ To be able to compile the source code, follow the instructions below
   * Note: It is possible that your operating system already provides this library
 * [GLEW](http://glew.sourceforge.net)
   * Note: For Windows environments extract in "libs/glew"
+  * Note: For Windows environments the "glew32.dll" must to be in the binary folder OR in the %PATH% variable
 * [GLFW](https://www.glfw.org)
   * Note: For Windows environments extract in "libs/glfw"
 
