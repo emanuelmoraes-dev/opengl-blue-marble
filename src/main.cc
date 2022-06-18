@@ -20,7 +20,7 @@ glm::mat4 buildModelViewProjection() {
     const glm::mat4 model = glm::identity<glm::mat4>();
 
     // View
-    const glm::vec3 eye { 10.0f, 10.0f, 10.0f };
+    const glm::vec3 eye { 0.0f, 0.0f, 5.0f };
     const glm::vec3 center { 0.0f, 0.0f, 0.0f };
     const glm::vec3 up { 0, 1, 0 };
     const glm::mat4 view = glm::lookAt(eye, center, up);
@@ -28,8 +28,8 @@ glm::mat4 buildModelViewProjection() {
     // Projection
     constexpr float fov = glm::radians(45.0f);
     constexpr float aspect = BM_WINDOW_WIDTH / BM_WINDOW_HEIGHT;
-    constexpr float near = 0.01f;
-    constexpr float far = 1000.0f;
+    constexpr float near = 1.0f;
+    constexpr float far = 100000.0f;
     const glm::mat4 projection = glm::perspective(fov, aspect, near, far);
 
     return projection * view * model;
