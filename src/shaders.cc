@@ -79,6 +79,7 @@ void freeProgram(GLuint const* programId, GLuint const* vertShaderId, GLuint con
 int loadShaders(GLuint* const programId, const char* vertShaderFile, const char* fragShaderFile) {
     int err = 0;
 
+    std::cout << "loading " << vertShaderFile << std::endl;
     std::string vertShaderSource;
     err = readFile(vertShaderFile, vertShaderSource);
     if (err != 0) {
@@ -97,6 +98,7 @@ int loadShaders(GLuint* const programId, const char* vertShaderFile, const char*
         return BM_ERR_VERT_SHADER_COMPILE;
     }
 
+    std::cout << "loading " << fragShaderFile << std::endl;
     std::string fragShaderSource;
     err = readFile(fragShaderFile, fragShaderSource);
     if (err != 0) {
