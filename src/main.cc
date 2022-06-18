@@ -42,18 +42,28 @@ void applyCpuModelViewProjection(glm::vec3& vertex, glm::mat4 const& modelViewPr
     vertex = projected;
 }
 
+void terminate(GLuint const* programId, GLuint const* trianguleBuffer) {
+    if (programId != nullptr)
+        glDeleteProgram(*programId);
+    if (trianguleBuffer != nullptr)
+        glDeleteBuffers(1, trianguleBuffer);
+    glfwTerminate();
+}
+
 int main() {
     int err = 0;
 
     err = glfwInit();
     if (err != GLFW_TRUE) {
         CERR(BM_ERR_GLFW_INIT, err);
+        terminate(nullptr, nullptr);
         return BM_ERR_GLFW_INIT;
     }
 
     GLFWwindow* window = glfwCreateWindow(BM_WINDOW_WIDTH, BM_WINDOW_HEIGHT, BM_WINDOW_TITLE, nullptr, nullptr);
     if (window == nullptr) {
         CERR(BM_ERR_WINDOW, err);
+        terminate(nullptr, nullptr);
         return BM_ERR_WINDOW;
     }
 
@@ -62,10 +72,15 @@ int main() {
     err = glewInit();
     if (err != GLEW_OK) {
         CERR(BM_ERR_GLEW_INIT, err);
+        terminate(nullptr, nullptr);
         return BM_ERR_GLEW_INIT;
     }
 
-    coutAllInfo();
+    err = coutAllInfo();
+    if (err != 0) {
+        terminate(nullptr, nullptr);
+        return err;
+    }
 
     glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 
@@ -77,17 +92,16 @@ int main() {
         glm::vec3 {  0.0f,  1.0f, 0.0f }
     };
 
-    std::string trianguleVertShader;
-    err = readFile(BM_SHADER_VERT_TRIANGULE, trianguleVertShader);
-    if (err != 0) {
-        CERR(BM_ERR_FILE_NOT_FOUND, err);
-        return BM_ERR_FILE_NOT_FOUND;
-    }
-
-    std::cout << trianguleVertShader << std::endl;
-
     for (glm::vec3& vertex : triangule)
         applyCpuModelViewProjection(vertex, modelViewProjection);
+
+    GLuint programId;
+    err = loadShaders(&programId, BM_SHADER_VERT_TRIANGULE, BM_SHADER_FRAG_TRIANGULE);
+    if (err != 0) {
+        CERR_MSG(BM_ERR_LOAD_SHADERS, err, "triangule program error");
+        terminate(nullptr, nullptr);
+        return BM_ERR_LINK_PROGRAM;
+    }
 
     // std::array<glm::vec3, 6> triangule {
     //     glm::vec3 { -1.0f, -1.0f, 0.0f },
@@ -110,8 +124,7 @@ int main() {
         glfwSwapBuffers(window);
     }
 
-    glDeleteBuffers(1, &trianguleBuffer);
-    glfwTerminate();
+    terminate(&programId, &trianguleBuffer);
 
     return 0;
 }

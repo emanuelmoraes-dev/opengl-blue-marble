@@ -9,6 +9,7 @@ target_sources(
         src/main.cc
         src/info.cc
         src/fs.cc
+        src/shaders.cc
         src/scenes.cc
         src/scenes/single_triangule.cc
 )

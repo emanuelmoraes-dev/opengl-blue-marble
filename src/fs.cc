@@ -1,4 +1,5 @@
 #include "fs.hh"
+#include "errors.hh"
 
 #include <fstream>
 
@@ -7,6 +8,6 @@ int readFile(const char* path, std::string& content) {
         content.assign(std::istreambuf_iterator<char>(fileStream), std::istreambuf_iterator<char>());
         return 0;
     } else {
-        return 1;
+        return BM_ERR_FILE_NOT_FOUND;
     }
 }
