@@ -92,6 +92,16 @@ int main() {
         glm::vec3 {  0.0f,  1.0f, 0.0f }
     };
 
+    // std::array<glm::vec3, 6> triangule {
+    //     glm::vec3 { -1.0f, -1.0f, 0.0f },
+    //     glm::vec3 {  1.0f, -1.0f, 0.0f },
+    //     glm::vec3 {  0.0f,  1.0f, 0.0f },
+
+    //     glm::vec3 { -1.0f,  1.0f, 0.0f },
+    //     glm::vec3 {  1.0f,  1.0f, 0.0f },
+    //     glm::vec3 {  0.0f, -1.0f, 0.0f }
+    // };
+
     for (glm::vec3& vertex : triangule)
         applyCpuModelViewProjection(vertex, modelViewProjection);
 
@@ -103,22 +113,15 @@ int main() {
         return BM_ERR_LINK_PROGRAM;
     }
 
-    // std::array<glm::vec3, 6> triangule {
-    //     glm::vec3 { -1.0f, -1.0f, 0.0f },
-    //     glm::vec3 {  1.0f, -1.0f, 0.0f },
-    //     glm::vec3 {  0.0f,  1.0f, 0.0f },
-
-    //     glm::vec3 { -1.0f,  1.0f, 0.0f },
-    //     glm::vec3 {  1.0f,  1.0f, 0.0f },
-    //     glm::vec3 {  0.0f, -1.0f, 0.0f }
-    // };
-
     const GLuint trianguleBuffer = sceneSingleTriangules(sizeof(triangule), triangule.data());
 
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
+
+        glUseProgram(programId);
         drawScene(trianguleBuffer, 0, 3, 0, 3);
         // drawScene(trianguleBuffer, 0, 6, 0, 3);
+        glUseProgram(0);
 
         glfwPollEvents();
         glfwSwapBuffers(window);
