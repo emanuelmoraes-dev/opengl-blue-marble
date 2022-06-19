@@ -10,7 +10,6 @@ target_sources(
         src/info.cc
         src/fs.cc
         src/shaders.cc
-        src/scenes.cc
         src/scenes/single_triangule.cc
 )
 

@@ -15,6 +15,11 @@
 #include "shaders.hh"
 #include "fs.hh"
 
+struct Vertex {
+    glm::vec3 position;
+    glm::vec3 color;
+};
+
 glm::mat4 buildModelViewProjection() {
     // Model
     const glm::mat4 model = glm::identity<glm::mat4>();
@@ -35,11 +40,11 @@ glm::mat4 buildModelViewProjection() {
     return projection * view * model;
 }
 
-void applyCpuModelViewProjection(glm::vec3& vertex, glm::mat4 const& modelViewProjection) {
-    glm::vec4 projected { vertex, 1.0f };
+void applyCpuModelViewProjection(Vertex& vertex, glm::mat4 const& modelViewProjection) {
+    glm::vec4 projected { vertex.position, 1.0f };
     projected = modelViewProjection * projected;
     projected /= projected.w;
-    vertex = projected;
+    vertex.position = projected;
 }
 
 void terminate(GLuint const* programId, GLuint const* trianguleBuffer) {
@@ -82,15 +87,21 @@ int main() {
         return err;
     }
 
-    glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 
     const glm::mat4 modelViewProjection = buildModelViewProjection();
 
-    std::array<glm::vec3, 3> triangule {
-        glm::vec3 { -1.0f, -1.0f, 0.0f },
-        glm::vec3 {  1.0f, -1.0f, 0.0f },
-        glm::vec3 {  0.0f,  1.0f, 0.0f }
+    std::array<Vertex, 3> triangule {
+        Vertex { glm::vec3 { -1.0f, -1.0f, 0.0f }, glm::vec3 { 1.0f, 0.0f, 0.0f } },
+        Vertex { glm::vec3 {  1.0f, -1.0f, 0.0f }, glm::vec3 { 0.0f, 1.0f, 0.0f } },
+        Vertex { glm::vec3 {  0.0f,  1.0f, 0.0f }, glm::vec3 { 0.0f, 0.0f, 1.0f } }
     };
+
+    // std::array<glm::vec3, 3> triangule {
+    //     glm::vec3 { -1.0f, -1.0f, 0.0f },
+    //     glm::vec3 {  1.0f, -1.0f, 0.0f },
+    //     glm::vec3 {  0.0f,  1.0f, 0.0f }
+    // };
 
     // std::array<glm::vec3, 6> triangule {
     //     glm::vec3 { -1.0f, -1.0f, 0.0f },
@@ -102,7 +113,7 @@ int main() {
     //     glm::vec3 {  0.0f, -1.0f, 0.0f }
     // };
 
-    for (glm::vec3& vertex : triangule)
+    for (Vertex& vertex : triangule)
         applyCpuModelViewProjection(vertex, modelViewProjection);
 
     GLuint programId;
@@ -119,8 +130,20 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(programId);
-        drawScene(trianguleBuffer, 0, 3, 0, 3);
-        // drawScene(trianguleBuffer, 0, 6, 0, 3);
+        glBindBuffer(GL_ARRAY_BUFFER, trianguleBuffer);
+
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
+
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex),
+            reinterpret_cast<void*>(offsetof(Vertex, color)));
+
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
         glUseProgram(0);
 
         glfwPollEvents();
