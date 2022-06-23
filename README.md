@@ -24,3 +24,4 @@ Copy the file "env/env.example.hh" in "env/debug/env.hh" and "env/release/env.hh
 
 #### env.hh
 * BM_ENV_SHADERS_DIR: Folder path that has the shading source
+* BM_ENV_TEXTURES_DIR: Folder path that has the textures
