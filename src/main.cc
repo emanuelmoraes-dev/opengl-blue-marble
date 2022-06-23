@@ -13,7 +13,7 @@
 #include "info.hh"
 #include "scenes.hh"
 #include "shaders.hh"
-#include "fs.hh"
+#include "textures.hh"
 
 struct Vertex {
     glm::vec3 position;
@@ -49,6 +49,7 @@ void applyCpuModelViewProjection(Vertex& vertex, glm::mat4 const& modelViewProje
 }
 
 void terminate(GLuint const* programId, GLuint const* trianguleBuffer) {
+    glUseProgram(0);
     if (programId != nullptr)
         glDeleteProgram(*programId);
     if (trianguleBuffer != nullptr)
@@ -92,7 +93,7 @@ int main() {
 
     const glm::mat4 modelViewProjection = buildModelViewProjection();
 
-    std::array<Vertex, 3> triangule {
+    std::array<Vertex, 6> triangules {
         Vertex {
             glm::vec3 { -1.0f, -1.0f, 0.0f },
             glm::vec3 {  1.0f,  0.0f, 0.0f },
@@ -106,29 +107,31 @@ int main() {
         },
 
         Vertex {
-            glm::vec3 {  0.0f,  1.0f, 0.0f },
+            glm::vec3 { -1.0f,  1.0f, 0.0f },
             glm::vec3 {  0.0f,  0.0f, 1.0f },
-            glm::vec2 {  0.5f,  1.0f }
-        }
+            glm::vec2 {  0.0f,  1.0f }
+        },
+
+        Vertex {
+            glm::vec3 { -1.0f,  1.0f, 0.0f },
+            glm::vec3 {  0.0f,  0.0f, 1.0f },
+            glm::vec2 {  0.0f,  1.0f }
+        },
+
+        Vertex {
+            glm::vec3 {  1.0f, -1.0f, 0.0f },
+            glm::vec3 {  0.0f,  1.0f, 0.0f },
+            glm::vec2 {  1.0f,  0.0f }
+        },
+
+        Vertex {
+            glm::vec3 {  1.0f,  1.0f, 0.0f },
+            glm::vec3 {  1.0f,  0.0f, 0.0f },
+            glm::vec2 {  1.0f,  1.0f }
+        },
     };
 
-    // std::array<glm::vec3, 3> triangule {
-    //     glm::vec3 { -1.0f, -1.0f, 0.0f },
-    //     glm::vec3 {  1.0f, -1.0f, 0.0f },
-    //     glm::vec3 {  0.0f,  1.0f, 0.0f }
-    // };
-
-    // std::array<glm::vec3, 6> triangule {
-    //     glm::vec3 { -1.0f, -1.0f, 0.0f },
-    //     glm::vec3 {  1.0f, -1.0f, 0.0f },
-    //     glm::vec3 {  0.0f,  1.0f, 0.0f },
-
-    //     glm::vec3 { -1.0f,  1.0f, 0.0f },
-    //     glm::vec3 {  1.0f,  1.0f, 0.0f },
-    //     glm::vec3 {  0.0f, -1.0f, 0.0f }
-    // };
-
-    // for (Vertex& vertex : triangule)
+    // for (Vertex& vertex : triangules)
     //     applyCpuModelViewProjection(vertex, modelViewProjection);
 
     GLuint programId;
@@ -139,7 +142,15 @@ int main() {
         return BM_ERR_LINK_PROGRAM;
     }
 
-    const GLuint trianguleBuffer = sceneSingleTriangules(sizeof(triangule), triangule.data());
+    GLuint earthTextureId = 0;
+    err = loadTexture(&earthTextureId, BM_TEXTURE_EARTH);
+    if (err != 0) {
+        CERR_MSG(BM_ERR_LOAD_TEXTURE, err, "earth texture error");
+        terminate(&programId, nullptr);
+        return err;
+    }
+
+    const GLuint trianguleBuffer = sceneSingleTriangules(sizeof(triangules), triangules.data());
 
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
@@ -149,6 +160,12 @@ int main() {
         GLint MVP = glGetUniformLocation(programId, "MVP");
         glUniformMatrix4fv(MVP, 1, GL_FALSE, glm::value_ptr(modelViewProjection));
 
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, earthTextureId);
+
+        GLuint TEX_EARTH = glGetUniformLocation(programId, "TEX_EARTH");
+        glUniform1f(TEX_EARTH, 0);
+
         glBindBuffer(GL_ARRAY_BUFFER, trianguleBuffer);
 
         glEnableVertexAttribArray(0);
@@ -156,13 +173,13 @@ int main() {
 
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex),
-            reinterpret_cast<void*>(offsetof(Vertex, color)));
+            (const void*) offsetof(Vertex, color));
 
         glEnableVertexAttribArray(2);
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_TRUE, sizeof(Vertex),
-            reinterpret_cast<void*>(offsetof(Vertex, uv)));
+            (const void*) offsetof(Vertex, uv));
 
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, (GLsizei) triangules.size());
 
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
