@@ -17,7 +17,7 @@ To be able to compile the source code, follow the instructions below
 * [GLEW](http://glew.sourceforge.net)
   * Note: For Windows environments extract in "libs/glew"
   * Note: For Windows environments the "glew32.dll" must to be in the binary folder OR in the %PATH% variable
-  * Note: If you use Windows, you can doenload [here](https://github.com/emanuelmoraes-dev/opengl-blue-marble/releases/download/dependencies/glew-2.1.0-win32.zip)
+  * Note: If you use Windows, you can download [here](https://github.com/emanuelmoraes-dev/opengl-blue-marble/releases/download/dependencies/glew-2.1.0-win32.zip)
 
 ### Configuring Environment
 Copy the file "env/env.example.hh" in "env/debug/env.hh" and "env/release/env.hh" with the configuration for debug and release environments respectively
