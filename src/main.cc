@@ -113,8 +113,8 @@ int main() {
     //     glm::vec3 {  0.0f, -1.0f, 0.0f }
     // };
 
-    for (Vertex& vertex : triangule)
-        applyCpuModelViewProjection(vertex, modelViewProjection);
+    // for (Vertex& vertex : triangule)
+    //     applyCpuModelViewProjection(vertex, modelViewProjection);
 
     GLuint programId;
     err = loadShaders(&programId, BM_SHADER_VERT_TRIANGULE, BM_SHADER_FRAG_TRIANGULE);
@@ -130,6 +130,10 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(programId);
+
+        GLint MVP = glGetUniformLocation(programId, "MVP");
+        glUniformMatrix4fv(MVP, 1, GL_FALSE, glm::value_ptr(modelViewProjection));
+
         glBindBuffer(GL_ARRAY_BUFFER, trianguleBuffer);
 
         glEnableVertexAttribArray(0);
