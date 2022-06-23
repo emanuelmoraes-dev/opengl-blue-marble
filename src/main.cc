@@ -18,6 +18,7 @@
 struct Vertex {
     glm::vec3 position;
     glm::vec3 color;
+    glm::vec2 uv;
 };
 
 glm::mat4 buildModelViewProjection() {
@@ -92,9 +93,23 @@ int main() {
     const glm::mat4 modelViewProjection = buildModelViewProjection();
 
     std::array<Vertex, 3> triangule {
-        Vertex { glm::vec3 { -1.0f, -1.0f, 0.0f }, glm::vec3 { 1.0f, 0.0f, 0.0f } },
-        Vertex { glm::vec3 {  1.0f, -1.0f, 0.0f }, glm::vec3 { 0.0f, 1.0f, 0.0f } },
-        Vertex { glm::vec3 {  0.0f,  1.0f, 0.0f }, glm::vec3 { 0.0f, 0.0f, 1.0f } }
+        Vertex {
+            glm::vec3 { -1.0f, -1.0f, 0.0f },
+            glm::vec3 {  1.0f,  0.0f, 0.0f },
+            glm::vec2 {  0.0f,  0.0f }
+        },
+
+        Vertex {
+            glm::vec3 {  1.0f, -1.0f, 0.0f },
+            glm::vec3 {  0.0f,  1.0f, 0.0f },
+            glm::vec2 {  1.0f,  0.0f }
+        },
+
+        Vertex {
+            glm::vec3 {  0.0f,  1.0f, 0.0f },
+            glm::vec3 {  0.0f,  0.0f, 1.0f },
+            glm::vec2 {  0.5f,  1.0f }
+        }
     };
 
     // std::array<glm::vec3, 3> triangule {
@@ -143,10 +158,15 @@ int main() {
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex),
             reinterpret_cast<void*>(offsetof(Vertex, color)));
 
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_TRUE, sizeof(Vertex),
+            reinterpret_cast<void*>(offsetof(Vertex, uv)));
+
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(2);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glUseProgram(0);
 
