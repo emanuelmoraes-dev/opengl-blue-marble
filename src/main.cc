@@ -14,39 +14,13 @@
 #include "scenes.hh"
 #include "shaders.hh"
 #include "textures.hh"
+#include "fly_camera.hh"
 
 struct Vertex {
     glm::vec3 position;
     glm::vec3 color;
     glm::vec2 uv;
 };
-
-glm::mat4 buildModelViewProjection() {
-    // Model
-    const glm::mat4 model = glm::identity<glm::mat4>();
-
-    // View
-    const glm::vec3 eye { 0.0f, 0.0f, 5.0f };
-    const glm::vec3 center { 0.0f, 0.0f, 0.0f };
-    const glm::vec3 up { 0, 1, 0 };
-    const glm::mat4 view = glm::lookAt(eye, center, up);
-
-    // Projection
-    constexpr float fov = glm::radians(45.0f);
-    constexpr float aspect = BM_WINDOW_WIDTH / BM_WINDOW_HEIGHT;
-    constexpr float near = 1.0f;
-    constexpr float far = 100000.0f;
-    const glm::mat4 projection = glm::perspective(fov, aspect, near, far);
-
-    return projection * view * model;
-}
-
-void applyCpuModelViewProjection(Vertex& vertex, glm::mat4 const& modelViewProjection) {
-    glm::vec4 projected { vertex.position, 1.0f };
-    projected = modelViewProjection * projected;
-    projected /= projected.w;
-    vertex.position = projected;
-}
 
 void terminate(GLuint const* programId, GLuint const* trianguleBuffer) {
     glUseProgram(0);
@@ -56,6 +30,33 @@ void terminate(GLuint const* programId, GLuint const* trianguleBuffer) {
         glDeleteBuffers(1, trianguleBuffer);
     glfwTerminate();
 }
+
+// glm::mat4 buildModelViewProjection() {
+//     // Model
+//     const glm::mat4 model = glm::identity<glm::mat4>();
+
+//     // View
+//     const glm::vec3 eye { 0.0f, 0.0f, 5.0f };
+//     const glm::vec3 center { 0.0f, 0.0f, 0.0f };
+//     const glm::vec3 up { 0, 1, 0 };
+//     const glm::mat4 view = glm::lookAt(eye, center, up);
+
+//     // Projection
+//     constexpr float fov = glm::radians(45.0f);
+//     constexpr float aspect = BM_WINDOW_WIDTH / BM_WINDOW_HEIGHT;
+//     constexpr float near = 1.0f;
+//     constexpr float far = 100000.0f;
+//     const glm::mat4 projection = glm::perspective(fov, aspect, near, far);
+
+//     return projection * view * model;
+// }
+
+// void applyCpuModelViewProjection(Vertex& vertex, glm::mat4 const& modelViewProjection) {
+//     glm::vec4 projected { vertex.position, 1.0f };
+//     projected = modelViewProjection * projected;
+//     projected /= projected.w;
+//     vertex.position = projected;
+// }
 
 int main() {
     int err = 0;
@@ -91,7 +92,8 @@ int main() {
 
     glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 
-    const glm::mat4 modelViewProjection = buildModelViewProjection();
+    const glm::mat4 model = glm::identity<glm::mat4>();
+    // const glm::mat4 modelViewProjection = buildModelViewProjection();
 
     std::array<Vertex, 6> triangules {
         Vertex {
@@ -152,11 +154,21 @@ int main() {
 
     const GLuint trianguleBuffer = sceneSingleTriangules(sizeof(triangules), triangules.data());
 
+    FlyCamera camera;
+    float previousTime = (float) glfwGetTime();
+
     while (!glfwWindowShouldClose(window)) {
+        const float currentTime = (float) glfwGetTime();
+        const float deltaTime = currentTime - previousTime;
+
+        if (deltaTime > 0)
+            previousTime = currentTime;
+
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(programId);
 
+        const glm::mat4 modelViewProjection = camera.buildViewProjection() * model;
         GLint MVP = glGetUniformLocation(programId, "MVP");
         glUniformMatrix4fv(MVP, 1, GL_FALSE, glm::value_ptr(modelViewProjection));
 
@@ -189,6 +201,16 @@ int main() {
 
         glfwPollEvents();
         glfwSwapBuffers(window);
+
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+            camera.moveFoward(1 * deltaTime);
+        else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+            camera.moveFoward(-1 * deltaTime);
+
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+            camera.moveRight(1 * deltaTime);
+        else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+            camera.moveRight(-1 * deltaTime);
     }
 
     terminate(&programId, &trianguleBuffer);

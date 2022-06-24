@@ -11,6 +11,7 @@ target_sources(
         src/fs.cc
         src/shaders.cc
         src/textures.cc
+        src/fly_camera.cc
         src/scenes/single_triangule.cc
 )
 
