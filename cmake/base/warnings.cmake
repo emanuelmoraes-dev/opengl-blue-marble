@@ -4,6 +4,7 @@ if (USING_MSVC)
     set(WARNS
         /W4
         /wd4201
+        /wd4100
     )
 
     set(WARNS_AS_ERR

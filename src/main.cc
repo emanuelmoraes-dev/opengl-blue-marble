@@ -15,6 +15,7 @@
 #include "shaders.hh"
 #include "textures.hh"
 #include "fly_camera.hh"
+#include "delta.hh"
 
 struct Vertex {
     glm::vec3 position;
@@ -58,6 +59,37 @@ void terminate(GLuint const* programId, GLuint const* trianguleBuffer) {
 //     vertex.position = projected;
 // }
 
+FlyCamera camera;
+DeltaF dtime;
+DeltaF dyaw;
+DeltaF dpitch;
+bool changingDirection = false;
+
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int modifiers) {
+    if (button == GLFW_MOUSE_BUTTON_LEFT) {
+        if (action == GLFW_PRESS) {
+            double x;
+            double y;
+            glfwGetCursorPos(window, &x, &y);
+            dyaw.tick((float) x);
+            dpitch.tick((float) y);
+            changingDirection = true;
+        } else {
+            dyaw.reset();
+            dpitch.reset();
+            changingDirection = false;
+        }
+    }
+}
+
+void cursorPosCallback(GLFWwindow* window, double x, double y) {
+    if (changingDirection) {
+        dyaw.tick((float) x);
+        dpitch.tick((float) y);
+        camera.look(dyaw.delta(), dpitch.delta());
+    }
+}
+
 int main() {
     int err = 0;
 
@@ -75,6 +107,8 @@ int main() {
         return BM_ERR_WINDOW;
     }
 
+    glfwSetMouseButtonCallback(window, mouseButtonCallback);
+    glfwSetCursorPosCallback(window, cursorPosCallback);
     glfwMakeContextCurrent(window);
 
     err = glewInit();
@@ -154,15 +188,10 @@ int main() {
 
     const GLuint trianguleBuffer = sceneSingleTriangules(sizeof(triangules), triangules.data());
 
-    FlyCamera camera;
-    float previousTime = (float) glfwGetTime();
+    dtime.tick((float) glfwGetTime());
 
     while (!glfwWindowShouldClose(window)) {
-        const float currentTime = (float) glfwGetTime();
-        const float deltaTime = currentTime - previousTime;
-
-        if (deltaTime > 0)
-            previousTime = currentTime;
+        dtime.tick((float) glfwGetTime());
 
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -203,14 +232,14 @@ int main() {
         glfwSwapBuffers(window);
 
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-            camera.moveFoward(1 * deltaTime);
+            camera.moveFoward(1 * dtime.delta());
         else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-            camera.moveFoward(-1 * deltaTime);
+            camera.moveFoward(-1 * dtime.delta());
 
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-            camera.moveRight(1 * deltaTime);
+            camera.moveRight(1 * dtime.delta());
         else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-            camera.moveRight(-1 * deltaTime);
+            camera.moveRight(-1 * dtime.delta());
     }
 
     terminate(&programId, &trianguleBuffer);

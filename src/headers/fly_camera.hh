@@ -6,6 +6,8 @@
 
 class FlyCamera {
 public:
+    const glm::mat4 I;
+
     glm::vec3 _eye;
     glm::vec3 _direction;
     glm::vec3 _up;
@@ -16,11 +18,13 @@ public:
     float _far;
 
     float _speed;
+    float _sensitivity;
 
     FlyCamera();
     glm::mat4 buildViewProjection() const;
     void moveFoward(float amount);
     void moveRight(float amount);
+    void look(float yaw, float pitch);
 };
 
 #endif

@@ -12,6 +12,7 @@ target_sources(
         src/shaders.cc
         src/textures.cc
         src/fly_camera.cc
+        src/delta.cc
         src/scenes/single_triangule.cc
 )
 
