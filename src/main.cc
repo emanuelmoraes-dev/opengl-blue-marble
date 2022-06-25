@@ -74,10 +74,12 @@ void mouseButtonCallback(GLFWwindow* window, int button, int action, int modifie
             dyaw.tick((float) x);
             dpitch.tick((float) y);
             changingDirection = true;
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         } else {
             dyaw.reset();
             dpitch.reset();
             changingDirection = false;
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         }
     }
 }
