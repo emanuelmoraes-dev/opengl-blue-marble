@@ -225,15 +225,19 @@ int main() {
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_TRUE, sizeof(Vertex),
             (const void*) offsetof(Vertex, uv));
 
-        // glPointSize(10.0f);
-        // glLineWidth(10.0f);
+        glPointSize(10.0f);
+        glLineWidth(10.0f);
+
+        // glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
         // glDrawArrays(GL_POINT, 0, (GLsizei) triangules.size());
         // glDrawArrays(GL_LINE, 0, (GLsizei) triangules.size());
         // glDrawArrays(GL_LINE_STRIP, 0, (GLsizei) triangules.size());
         // glDrawArrays(GL_LINE_LOOP, 0, (GLsizei) triangules.size());
         // glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei) triangules.size());
         // glDrawArrays(GL_TRIANGLE_FAN, 0, (GLsizei) triangules.size());
-
         glDrawArrays(GL_TRIANGLES, 0, (GLsizei) triangules.size());
 
         glDisableVertexAttribArray(0);
