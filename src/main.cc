@@ -192,6 +192,9 @@ int main() {
 
     dtime.tick((float) glfwGetTime());
 
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+
     while (!glfwWindowShouldClose(window)) {
         dtime.tick((float) glfwGetTime());
 
@@ -221,6 +224,15 @@ int main() {
         glEnableVertexAttribArray(2);
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_TRUE, sizeof(Vertex),
             (const void*) offsetof(Vertex, uv));
+
+        // glPointSize(10.0f);
+        // glLineWidth(10.0f);
+        // glDrawArrays(GL_POINT, 0, (GLsizei) triangules.size());
+        // glDrawArrays(GL_LINE, 0, (GLsizei) triangules.size());
+        // glDrawArrays(GL_LINE_STRIP, 0, (GLsizei) triangules.size());
+        // glDrawArrays(GL_LINE_LOOP, 0, (GLsizei) triangules.size());
+        // glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei) triangules.size());
+        // glDrawArrays(GL_TRIANGLE_FAN, 0, (GLsizei) triangules.size());
 
         glDrawArrays(GL_TRIANGLES, 0, (GLsizei) triangules.size());
 
