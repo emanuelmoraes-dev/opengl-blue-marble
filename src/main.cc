@@ -23,12 +23,14 @@ struct Vertex {
     glm::vec2 uv;
 };
 
-void terminate(GLuint const* programId, GLuint const* trianguleBuffer) {
+void terminate(GLuint const* programId, GLuint const* vbo, GLuint const* ebo) {
     glUseProgram(0);
     if (programId != nullptr)
         glDeleteProgram(*programId);
-    if (trianguleBuffer != nullptr)
-        glDeleteBuffers(1, trianguleBuffer);
+    if (vbo != nullptr)
+        glDeleteBuffers(1, vbo);
+    if (ebo != nullptr)
+        glDeleteBuffers(1, ebo);
     glfwTerminate();
 }
 
@@ -98,14 +100,14 @@ int main() {
     err = glfwInit();
     if (err != GLFW_TRUE) {
         CERR(BM_ERR_GLFW_INIT, err);
-        terminate(nullptr, nullptr);
+        terminate(nullptr, nullptr, nullptr);
         return BM_ERR_GLFW_INIT;
     }
 
     GLFWwindow* window = glfwCreateWindow(BM_WINDOW_WIDTH, BM_WINDOW_HEIGHT, BM_WINDOW_TITLE, nullptr, nullptr);
     if (window == nullptr) {
         CERR(BM_ERR_WINDOW, err);
-        terminate(nullptr, nullptr);
+        terminate(nullptr, nullptr, nullptr);
         return BM_ERR_WINDOW;
     }
 
@@ -116,13 +118,13 @@ int main() {
     err = glewInit();
     if (err != GLEW_OK) {
         CERR(BM_ERR_GLEW_INIT, err);
-        terminate(nullptr, nullptr);
+        terminate(nullptr, nullptr, nullptr);
         return BM_ERR_GLEW_INIT;
     }
 
     err = coutAllInfo();
     if (err != 0) {
-        terminate(nullptr, nullptr);
+        terminate(nullptr, nullptr, nullptr);
         return err;
     }
 
@@ -131,7 +133,45 @@ int main() {
     const glm::mat4 model = glm::identity<glm::mat4>();
     // const glm::mat4 modelViewProjection = buildModelViewProjection();
 
-    std::array<Vertex, 6> triangules {
+    // std::array<Vertex, 6> triangules {
+    //     Vertex {
+    //         glm::vec3 { -1.0f, -1.0f, 0.0f },
+    //         glm::vec3 {  1.0f,  0.0f, 0.0f },
+    //         glm::vec2 {  0.0f,  0.0f }
+    //     },
+
+    //     Vertex {
+    //         glm::vec3 {  1.0f, -1.0f, 0.0f },
+    //         glm::vec3 {  0.0f,  1.0f, 0.0f },
+    //         glm::vec2 {  1.0f,  0.0f }
+    //     },
+
+    //     Vertex {
+    //         glm::vec3 { -1.0f,  1.0f, 0.0f },
+    //         glm::vec3 {  0.0f,  0.0f, 1.0f },
+    //         glm::vec2 {  0.0f,  1.0f }
+    //     },
+
+    //     Vertex {
+    //         glm::vec3 { -1.0f,  1.0f, 0.0f },
+    //         glm::vec3 {  0.0f,  0.0f, 1.0f },
+    //         glm::vec2 {  0.0f,  1.0f }
+    //     },
+
+    //     Vertex {
+    //         glm::vec3 {  1.0f, -1.0f, 0.0f },
+    //         glm::vec3 {  0.0f,  1.0f, 0.0f },
+    //         glm::vec2 {  1.0f,  0.0f }
+    //     },
+
+    //     Vertex {
+    //         glm::vec3 {  1.0f,  1.0f, 0.0f },
+    //         glm::vec3 {  1.0f,  0.0f, 0.0f },
+    //         glm::vec2 {  1.0f,  1.0f }
+    //     },
+    // };
+
+    std::array<Vertex, 4> quad {
         Vertex {
             glm::vec3 { -1.0f, -1.0f, 0.0f },
             glm::vec3 {  1.0f,  0.0f, 0.0f },
@@ -145,28 +185,21 @@ int main() {
         },
 
         Vertex {
-            glm::vec3 { -1.0f,  1.0f, 0.0f },
-            glm::vec3 {  0.0f,  0.0f, 1.0f },
-            glm::vec2 {  0.0f,  1.0f }
-        },
-
-        Vertex {
-            glm::vec3 { -1.0f,  1.0f, 0.0f },
-            glm::vec3 {  0.0f,  0.0f, 1.0f },
-            glm::vec2 {  0.0f,  1.0f }
-        },
-
-        Vertex {
-            glm::vec3 {  1.0f, -1.0f, 0.0f },
-            glm::vec3 {  0.0f,  1.0f, 0.0f },
-            glm::vec2 {  1.0f,  0.0f }
-        },
-
-        Vertex {
             glm::vec3 {  1.0f,  1.0f, 0.0f },
             glm::vec3 {  1.0f,  0.0f, 0.0f },
             glm::vec2 {  1.0f,  1.0f }
         },
+
+        Vertex {
+            glm::vec3 { -1.0f,  1.0f, 0.0f },
+            glm::vec3 {  0.0f,  0.0f, 1.0f },
+            glm::vec2 {  0.0f,  1.0f }
+        }
+    };
+
+    std::array<glm::ivec3, 2> indexes {
+        glm::ivec3 { 0, 1, 3 },
+        glm::ivec3 { 3, 1, 2 }
     };
 
     // for (Vertex& vertex : triangules)
@@ -176,7 +209,7 @@ int main() {
     err = loadShaders(&programId, BM_SHADER_VERT_TRIANGULE, BM_SHADER_FRAG_TRIANGULE);
     if (err != 0) {
         CERR_MSG(BM_ERR_LOAD_SHADERS, err, "triangule program error");
-        terminate(nullptr, nullptr);
+        terminate(nullptr, nullptr, nullptr);
         return BM_ERR_LINK_PROGRAM;
     }
 
@@ -184,11 +217,16 @@ int main() {
     err = loadTexture(&earthTextureId, BM_TEXTURE_EARTH);
     if (err != 0) {
         CERR_MSG(BM_ERR_LOAD_TEXTURE, err, "earth texture error");
-        terminate(&programId, nullptr);
+        terminate(&programId, nullptr, nullptr);
         return err;
     }
 
-    const GLuint trianguleBuffer = sceneSingleTriangules(sizeof(triangules), triangules.data());
+    GLuint vbo = 0;
+    // sceneSingleTriangulesVBO(&vbo, sizeof(triangules), triangules.data());
+    sceneSingleTriangulesVBO(&vbo, sizeof(quad), quad.data());
+
+    GLuint ebo = 0;
+    sceneSingleTriangulesEBO(&ebo, sizeof(indexes), indexes.data());
 
     dtime.tick((float) glfwGetTime());
 
@@ -212,7 +250,9 @@ int main() {
         GLuint TEX_EARTH = glGetUniformLocation(programId, "TEX_EARTH");
         glUniform1f(TEX_EARTH, 0);
 
-        glBindBuffer(GL_ARRAY_BUFFER, trianguleBuffer);
+        // glBindBuffer(GL_ARRAY_BUFFER, trianguleBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
@@ -238,12 +278,15 @@ int main() {
         // glDrawArrays(GL_LINE_LOOP, 0, (GLsizei) triangules.size());
         // glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei) triangules.size());
         // glDrawArrays(GL_TRIANGLE_FAN, 0, (GLsizei) triangules.size());
-        glDrawArrays(GL_TRIANGLES, 0, (GLsizei) triangules.size());
+        // glDrawArrays(GL_TRIANGLES, 0, (GLsizei) triangules.size());
+
+        glDrawElements(GL_TRIANGLES, (GLsizei) indexes.size() * 3, GL_UNSIGNED_INT, nullptr);
 
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(2);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glUseProgram(0);
 
         glfwPollEvents();
@@ -260,7 +303,7 @@ int main() {
             camera.moveRight(-1 * dtime.delta());
     }
 
-    terminate(&programId, &trianguleBuffer);
+    terminate(&programId, &vbo, &ebo);
 
     return 0;
 }

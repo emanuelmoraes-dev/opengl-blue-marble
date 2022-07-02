@@ -6,13 +6,20 @@
 #include "errors.hh"
 #include "scenes.hh"
 
-GLuint sceneSingleTriangules(GLsizeiptr size, const void* triangule) {
-    GLuint vertexBuffer;
-    glGenBuffers(1, &vertexBuffer);
+void sceneSingleTriangulesVBO(GLuint* vbo, GLsizeiptr size, const void* vertexBuffer) {
+    glGenBuffers(1, vbo);
 
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, size, triangule, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, *vbo);
+    glBufferData(GL_ARRAY_BUFFER, size, vertexBuffer, GL_STATIC_DRAW);
 
-    glBindBuffer(vertexBuffer, 0);
-    return vertexBuffer;
+    glBindBuffer(*vbo, 0);
+}
+
+void sceneSingleTriangulesEBO(GLuint* ebo, GLsizeiptr size, const void* elementBuffer) {
+    glGenBuffers(1, ebo);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, elementBuffer, GL_STATIC_DRAW);
+
+    glBindBuffer(*ebo, 0);
 }

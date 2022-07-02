@@ -6,6 +6,7 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
-GLuint sceneSingleTriangules(GLsizeiptr size, const void* triangule);
+void sceneSingleTriangulesVBO(GLuint* vbo, GLsizeiptr size, const void* vertexBuffer);
+void sceneSingleTriangulesEBO(GLuint* ebo, GLsizeiptr size, const void* elementBuffer);
 
 #endif
