@@ -34,15 +34,6 @@ struct Vertex {
 //     glfwTerminate();
 // }
 
-void terminate(GLuint const* programId, GLuint const* vao) {
-    glUseProgram(0);
-    if (programId != nullptr)
-        glDeleteProgram(*programId);
-    if (vao != nullptr)
-        glDeleteVertexArrays(1, vao);
-    glfwTerminate();
-}
-
 // glm::mat4 buildModelViewProjection() {
 //     // Model
 //     const glm::mat4 model = glm::identity<glm::mat4>();
@@ -69,6 +60,75 @@ void terminate(GLuint const* programId, GLuint const* vao) {
 //     projected /= projected.w;
 //     vertex.position = projected;
 // }
+
+void terminate(GLuint const* programId, GLuint const* vao) {
+    glUseProgram(0);
+    if (programId != nullptr)
+        glDeleteProgram(*programId);
+    if (vao != nullptr)
+        glDeleteVertexArrays(1, vao);
+    glfwTerminate();
+}
+
+void loadQuad(GLuint* vao, GLsizei* en) {
+    std::array<Vertex, 4> quad {
+        Vertex {
+            glm::vec3 { -1.0f, -1.0f, 0.0f },
+            glm::vec3 {  1.0f,  0.0f, 0.0f },
+            glm::vec2 {  0.0f,  0.0f }
+        },
+
+        Vertex {
+            glm::vec3 {  1.0f, -1.0f, 0.0f },
+            glm::vec3 {  0.0f,  1.0f, 0.0f },
+            glm::vec2 {  1.0f,  0.0f }
+        },
+
+        Vertex {
+            glm::vec3 {  1.0f,  1.0f, 0.0f },
+            glm::vec3 {  1.0f,  0.0f, 0.0f },
+            glm::vec2 {  1.0f,  1.0f }
+        },
+
+        Vertex {
+            glm::vec3 { -1.0f,  1.0f, 0.0f },
+            glm::vec3 {  0.0f,  0.0f, 1.0f },
+            glm::vec2 {  0.0f,  1.0f }
+        }
+    };
+
+    std::array<glm::ivec3, 2> indexes {
+        glm::ivec3 { 0, 1, 3 },
+        glm::ivec3 { 3, 1, 2 }
+    };
+
+    *en = indexes.size() * 3;
+
+    GLuint vbo = 0;
+    sceneVBO(&vbo, sizeof(quad), quad.data());
+
+    GLuint ebo = 0;
+    sceneEBO(&ebo, sizeof(indexes), indexes.data());
+
+    glGenVertexArrays(1, vao);
+    glBindVertexArray(*vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex),
+        (const void*) offsetof(Vertex, color));
+
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_TRUE, sizeof(Vertex),
+        (const void*) offsetof(Vertex, uv));
+
+    glBindVertexArray(0);
+}
 
 FlyCamera camera;
 DeltaF dtime;
@@ -184,41 +244,16 @@ int main() {
     //     },
     // };
 
-    std::array<Vertex, 4> quad {
-        Vertex {
-            glm::vec3 { -1.0f, -1.0f, 0.0f },
-            glm::vec3 {  1.0f,  0.0f, 0.0f },
-            glm::vec2 {  0.0f,  0.0f }
-        },
-
-        Vertex {
-            glm::vec3 {  1.0f, -1.0f, 0.0f },
-            glm::vec3 {  0.0f,  1.0f, 0.0f },
-            glm::vec2 {  1.0f,  0.0f }
-        },
-
-        Vertex {
-            glm::vec3 {  1.0f,  1.0f, 0.0f },
-            glm::vec3 {  1.0f,  0.0f, 0.0f },
-            glm::vec2 {  1.0f,  1.0f }
-        },
-
-        Vertex {
-            glm::vec3 { -1.0f,  1.0f, 0.0f },
-            glm::vec3 {  0.0f,  0.0f, 1.0f },
-            glm::vec2 {  0.0f,  1.0f }
-        }
-    };
-
-    std::array<glm::ivec3, 2> indexes {
-        glm::ivec3 { 0, 1, 3 },
-        glm::ivec3 { 3, 1, 2 }
-    };
+    // sceneVBO(&quadVBO, sizeof(triangules), triangules.data());
 
     // for (Vertex& vertex : triangules)
     //     applyCpuModelViewProjection(vertex, modelViewProjection);
 
-    GLuint programId;
+    GLuint quadVAO = 0;
+    GLsizei elementSize = 0;
+    loadQuad(&quadVAO, &elementSize);
+
+    GLuint programId = 0;
     err = loadShaders(&programId, BM_SHADER_VERT_TRIANGULE, BM_SHADER_FRAG_TRIANGULE);
     if (err != 0) {
         CERR_MSG(BM_ERR_LOAD_SHADERS, err, "triangule program error");
@@ -235,33 +270,6 @@ int main() {
         terminate(&programId, nullptr);
         return err;
     }
-
-    GLuint quadVBO = 0;
-    // sceneVBO(&quadVBO, sizeof(triangules), triangules.data());
-    sceneVBO(&quadVBO, sizeof(quad), quad.data());
-
-    GLuint quadEBO = 0;
-    sceneEBO(&quadEBO, sizeof(indexes), indexes.data());
-
-    GLuint quadVAO = 0;
-    glGenVertexArrays(1, &quadVAO);
-    glBindVertexArray(quadVAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadEBO);
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
-
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex),
-        (const void*) offsetof(Vertex, color));
-
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_TRUE, sizeof(Vertex),
-        (const void*) offsetof(Vertex, uv));
-
-    glBindVertexArray(0);
 
     dtime.tick((float) glfwGetTime());
 
@@ -311,7 +319,7 @@ int main() {
         // glDrawArrays(GL_TRIANGLE_FAN, 0, (GLsizei) triangules.size());
         // glDrawArrays(GL_TRIANGLES, 0, (GLsizei) triangules.size());
 
-        glDrawElements(GL_TRIANGLES, (GLsizei) indexes.size() * 3, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, elementSize, GL_UNSIGNED_INT, nullptr);
 
         // glDisableVertexAttribArray(0);
         // glDisableVertexAttribArray(1);
