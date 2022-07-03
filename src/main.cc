@@ -152,8 +152,10 @@ int main() {
 
     glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 
-    const glm::mat4 model = glm::identity<glm::mat4>();
     // const glm::mat4 modelViewProjection = buildModelViewProjection();
+    const glm::mat4 identity = glm::identity<glm::mat4>();
+    const glm::vec3 xAxe = glm::vec3 { 1.0f, 0.0f, 0.0f };
+    const glm::mat4 model = glm::rotate(identity, glm::radians(90.0f), xAxe);
 
     // std::array<Vertex, 6> triangules {
     //     Vertex {

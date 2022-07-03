@@ -30,7 +30,7 @@ void genSphereVertexes(std::vector<Vertex>& vertexes, std::vector<glm::ivec3>& i
             };
 
             glm::vec3 color { 1.0f, 1.0f, 1.0f };
-            glm::vec2 uv { U, V };
+            glm::vec2 uv { 1.0f - U, V };
             const Vertex vertex {position, color, uv};
             vertexes.push_back(vertex);
 
