@@ -15,8 +15,8 @@ struct Vertex {
 void sceneVBO(GLuint* vbo, GLsizeiptr size, const void* vertexBuffer);
 void sceneEBO(GLuint* ebo, GLsizeiptr size, const void* elementBuffer);
 
-void loadQuad(GLuint* vao, GLsizei* size);
-void loadSphere(GLuint* vao, GLsizei* size, GLuint resolution);
+void loadQuad(GLuint* vao, GLsizei* vn, GLsizei* in);
+void loadSphere(GLuint* vao, GLsizei* vn, GLsizei* in, GLuint resolution);
 
 
 #endif

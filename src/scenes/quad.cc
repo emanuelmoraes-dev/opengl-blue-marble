@@ -2,7 +2,7 @@
 
 #include <array>
 
-void loadQuad(GLuint* vao, GLsizei* size) {
+void loadQuad(GLuint* vao, GLsizei* vn, GLsizei* in) {
     std::array<Vertex, 4> quad {
         Vertex {
             glm::vec3 { -1.0f, -1.0f, 0.0f },
@@ -29,12 +29,14 @@ void loadQuad(GLuint* vao, GLsizei* size) {
         }
     };
 
+    *vn = (GLsizei) quad.size();
+
     std::array<glm::ivec3, 2> indexes {
         glm::ivec3 { 0, 1, 3 },
         glm::ivec3 { 3, 1, 2 }
     };
 
-    *size = (GLsizei) (indexes.size() * 3);
+    *in = (GLsizei) (indexes.size() * 3);
 
     GLuint vbo = 0;
     sceneVBO(&vbo, sizeof(quad), quad.data());

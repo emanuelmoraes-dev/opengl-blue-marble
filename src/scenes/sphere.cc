@@ -4,8 +4,9 @@
 
 #include <glm/ext.hpp>
 
-void genSphereVertexes(std::vector<Vertex>& vertexes, GLuint resolution) {
+void genSphereVertexes(std::vector<Vertex>& vertexes, std::vector<glm::ivec3>& indexes, GLuint resolution) {
     vertexes.clear();
+    indexes.clear();
 
     if (resolution < 2)
         return;
@@ -30,26 +31,45 @@ void genSphereVertexes(std::vector<Vertex>& vertexes, GLuint resolution) {
 
             glm::vec3 color { 1.0f, 1.0f, 1.0f };
             glm::vec2 uv { U, V };
-
             const Vertex vertex {position, color, uv};
             vertexes.push_back(vertex);
+
+            if (i < resolution - 1 && j < resolution - 1) {
+                const GLuint P0 =       i +       j * resolution;
+                const GLuint P1 = (i + 1) +       j * resolution;
+                const GLuint P2 = (i + 1) + (j + 1) * resolution;
+                const GLuint P3 =       i + (j + 1) * resolution;
+
+                const glm::ivec3 T0 { P0, P1, P3 };
+                const glm::ivec3 T1 { P3, P1, P2 };
+
+                indexes.push_back(T0);
+                indexes.push_back(T1);
+            }
         }
     }
 }
 
-void loadSphere(GLuint* vao, GLsizei* size, GLuint resolution) {
+void loadSphere(GLuint* vao, GLsizei* vn, GLsizei* in, GLuint resolution) {
     std::vector<Vertex> vertexes;
-    genSphereVertexes(vertexes, resolution);
-    *size = (GLsizei) vertexes.size();
+    std::vector<glm::ivec3> indexes;
+    genSphereVertexes(vertexes, indexes, resolution);
+    *vn = (GLsizei) vertexes.size();
+    *in = (GLsizei) indexes.size() * 3;
 
-    const GLsizei vboSize = (*size) * sizeof(Vertex);
+    const GLsizei vboSize = (*vn) * sizeof(Vertex);
     GLuint vbo = 0;
     sceneVBO(&vbo, vboSize, vertexes.data());
+
+    const GLsizei eboSize = (GLsizei) (indexes.size() * sizeof(glm::ivec3));
+    GLuint ebo = 0;
+    sceneEBO(&ebo, eboSize, indexes.data());
 
     glGenVertexArrays(1, vao);
     glBindVertexArray(*vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);

@@ -199,12 +199,14 @@ int main() {
     //     applyCpuModelViewProjection(vertex, modelViewProjection);
 
     // GLuint quadVAO = 0;
-    // GLsizei quadSize = 0;
-    // loadQuad(&quadVAO, &quadSize);
+    // GLsizei quadVN = 0;
+    // GLsizei quadIN = 0;
+    // loadQuad(&quadVAO, &quadVN, &quadIN);
 
     GLuint sphereVAO = 0;
-    GLsizei sphereSize = 0;
-    loadSphere(&sphereVAO, &sphereSize, 100);
+    GLsizei sphereVN = 0;
+    GLsizei sphereIN = 0;
+    loadSphere(&sphereVAO, &sphereVN, &sphereIN, 50);
 
     GLuint programId = 0;
     err = loadShaders(&programId, BM_SHADER_VERT_TRIANGULE, BM_SHADER_FRAG_TRIANGULE);
@@ -273,8 +275,10 @@ int main() {
         // glDrawArrays(GL_TRIANGLE_FAN, 0, (GLsizei) triangules.size());
         // glDrawArrays(GL_TRIANGLES, 0, (GLsizei) triangules.size());
 
-        // glDrawElements(GL_TRIANGLES, quadSize, GL_UNSIGNED_INT, nullptr);
-        glDrawArrays(GL_POINTS, 0, sphereSize);
+        // glDrawElements(GL_TRIANGLES, quadIN, GL_UNSIGNED_INT, nullptr);
+        // glDrawArrays(GL_POINTS, 0, sphereVN);
+
+        glDrawElements(GL_TRIANGLES, sphereIN, GL_UNSIGNED_INT, nullptr);
 
         // glDisableVertexAttribArray(0);
         // glDisableVertexAttribArray(1);
