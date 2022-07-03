@@ -14,6 +14,8 @@ target_sources(
         src/fly_camera.cc
         src/delta.cc
         src/scenes.cc
+        src/scenes/quad.cc
+        src/scenes/sphere.cc
 )
 
 target_include_directories(

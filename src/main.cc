@@ -198,9 +198,13 @@ int main() {
     // for (Vertex& vertex : triangules)
     //     applyCpuModelViewProjection(vertex, modelViewProjection);
 
-    GLuint quadVAO = 0;
-    GLsizei quadSize = 0;
-    loadQuad(&quadVAO, &quadSize);
+    // GLuint quadVAO = 0;
+    // GLsizei quadSize = 0;
+    // loadQuad(&quadVAO, &quadSize);
+
+    GLuint sphereVAO = 0;
+    GLsizei sphereSize = 0;
+    loadSphere(&sphereVAO, &sphereSize, 100);
 
     GLuint programId = 0;
     err = loadShaders(&programId, BM_SHADER_VERT_TRIANGULE, BM_SHADER_FRAG_TRIANGULE);
@@ -251,7 +255,8 @@ int main() {
         // glEnableVertexAttribArray(1);
         // glEnableVertexAttribArray(2);
 
-        glBindVertexArray(quadVAO);
+        // glBindVertexArray(quadVAO);
+        glBindVertexArray(sphereVAO);
 
         glPointSize(10.0f);
         glLineWidth(10.0f);
@@ -260,15 +265,16 @@ int main() {
         // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-        // glDrawArrays(GL_POINT, 0, (GLsizei) triangules.size());
-        // glDrawArrays(GL_LINE, 0, (GLsizei) triangules.size());
+        // glDrawArrays(GL_POINTS, 0, (GLsizei) triangules.size());
+        // glDrawArrays(GL_LINES, 0, (GLsizei) triangules.size());
         // glDrawArrays(GL_LINE_STRIP, 0, (GLsizei) triangules.size());
         // glDrawArrays(GL_LINE_LOOP, 0, (GLsizei) triangules.size());
         // glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei) triangules.size());
         // glDrawArrays(GL_TRIANGLE_FAN, 0, (GLsizei) triangules.size());
         // glDrawArrays(GL_TRIANGLES, 0, (GLsizei) triangules.size());
 
-        glDrawElements(GL_TRIANGLES, quadSize, GL_UNSIGNED_INT, nullptr);
+        // glDrawElements(GL_TRIANGLES, quadSize, GL_UNSIGNED_INT, nullptr);
+        glDrawArrays(GL_POINTS, 0, sphereSize);
 
         // glDisableVertexAttribArray(0);
         // glDisableVertexAttribArray(1);
@@ -293,7 +299,8 @@ int main() {
     }
 
     // terminate(&programId, &quadVBO, &quadEBO);
-    terminate(&programId, &quadVAO);
+    // terminate(&programId, &quadVAO);
+    terminate(&programId, &sphereVAO);
 
     return 0;
 }
