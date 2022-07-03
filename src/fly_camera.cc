@@ -46,5 +46,6 @@ void FlyCamera::look(float yaw, float pitch) {
     const glm::mat4 pitchRotate = glm::rotate(I, glm::radians(pitch * _sensitivity), right);
 
     // update
-    _direction = glm::normalize(yawRotate * pitchRotate * glm::vec4{ direction, 0.0f });
+    _up = glm::normalize(pitchRotate * glm::vec4 { up, 0.0f });
+    _direction = glm::normalize(yawRotate * pitchRotate * glm::vec4 { direction, 0.0f });
 }
