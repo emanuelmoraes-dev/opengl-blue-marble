@@ -16,7 +16,7 @@ FlyCamera::FlyCamera() :
     _near(0.01f),
     _far(1000.0f),
 
-    _speed(2.0f),
+    _speed(5.0f),
     _sensitivity(0.1f) {}
 
 glm::mat4 FlyCamera::buildViewProjection() const {
