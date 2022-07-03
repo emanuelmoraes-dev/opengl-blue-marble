@@ -12,7 +12,7 @@ FlyCamera::FlyCamera() :
     _up(glm::vec3{ 0.0f, 1.0f, 0.0f }),
 
     _fov(glm::radians(45.0f)),
-    _aspect(BM_WINDOW_WIDTH / BM_WINDOW_HEIGHT),
+    _aspect(BM_INIT_WINDOW_WIDTH / BM_INIT_WINDOW_HEIGHT),
     _near(0.01f),
     _far(1000.0f),
 

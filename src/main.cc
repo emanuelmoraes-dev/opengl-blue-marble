@@ -163,6 +163,11 @@ void cursorPosCallback(GLFWwindow* window, double x, double y) {
     }
 }
 
+void resized(GLFWwindow* window, int width, int height) {
+    camera._aspect = (float) width / height;
+    glViewport(0, 0, (GLsizei) width, (GLsizei) height);
+}
+
 int main() {
     int err = 0;
 
@@ -174,7 +179,7 @@ int main() {
         return BM_ERR_GLFW_INIT;
     }
 
-    GLFWwindow* window = glfwCreateWindow(BM_WINDOW_WIDTH, BM_WINDOW_HEIGHT, BM_WINDOW_TITLE, nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(BM_INIT_WINDOW_WIDTH, BM_INIT_WINDOW_HEIGHT, BM_WINDOW_TITLE, nullptr, nullptr);
     if (window == nullptr) {
         CERR(BM_ERR_WINDOW, err);
         // terminate(nullptr, nullptr, nullptr);
@@ -184,6 +189,8 @@ int main() {
 
     glfwSetMouseButtonCallback(window, mouseButtonCallback);
     glfwSetCursorPosCallback(window, cursorPosCallback);
+    glfwSetFramebufferSizeCallback(window, resized);
+
     glfwMakeContextCurrent(window);
 
     err = glewInit();
@@ -200,6 +207,8 @@ int main() {
         terminate(nullptr, nullptr);
         return err;
     }
+
+    resized(window, BM_INIT_WINDOW_WIDTH, BM_INIT_WINDOW_HEIGHT);
 
     glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 
@@ -250,8 +259,8 @@ int main() {
     //     applyCpuModelViewProjection(vertex, modelViewProjection);
 
     GLuint quadVAO = 0;
-    GLsizei elementSize = 0;
-    loadQuad(&quadVAO, &elementSize);
+    GLsizei quadSize = 0;
+    loadQuad(&quadVAO, &quadSize);
 
     GLuint programId = 0;
     err = loadShaders(&programId, BM_SHADER_VERT_TRIANGULE, BM_SHADER_FRAG_TRIANGULE);
@@ -319,7 +328,7 @@ int main() {
         // glDrawArrays(GL_TRIANGLE_FAN, 0, (GLsizei) triangules.size());
         // glDrawArrays(GL_TRIANGLES, 0, (GLsizei) triangules.size());
 
-        glDrawElements(GL_TRIANGLES, elementSize, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, quadSize, GL_UNSIGNED_INT, nullptr);
 
         // glDisableVertexAttribArray(0);
         // glDisableVertexAttribArray(1);
