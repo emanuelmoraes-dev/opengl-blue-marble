@@ -23,14 +23,23 @@ struct Vertex {
     glm::vec2 uv;
 };
 
-void terminate(GLuint const* programId, GLuint const* vbo, GLuint const* ebo) {
+// void terminate(GLuint const* programId, GLuint const* vbo, GLuint const* ebo) {
+//     glUseProgram(0);
+//     if (programId != nullptr)
+//         glDeleteProgram(*programId);
+//     if (vbo != nullptr)
+//         glDeleteBuffers(1, vbo);
+//     if (ebo != nullptr)
+//         glDeleteBuffers(1, ebo);
+//     glfwTerminate();
+// }
+
+void terminate(GLuint const* programId, GLuint const* vao) {
     glUseProgram(0);
     if (programId != nullptr)
         glDeleteProgram(*programId);
-    if (vbo != nullptr)
-        glDeleteBuffers(1, vbo);
-    if (ebo != nullptr)
-        glDeleteBuffers(1, ebo);
+    if (vao != nullptr)
+        glDeleteVertexArrays(1, vao);
     glfwTerminate();
 }
 
@@ -100,14 +109,16 @@ int main() {
     err = glfwInit();
     if (err != GLFW_TRUE) {
         CERR(BM_ERR_GLFW_INIT, err);
-        terminate(nullptr, nullptr, nullptr);
+        // terminate(nullptr, nullptr, nullptr);
+        terminate(nullptr, nullptr);
         return BM_ERR_GLFW_INIT;
     }
 
     GLFWwindow* window = glfwCreateWindow(BM_WINDOW_WIDTH, BM_WINDOW_HEIGHT, BM_WINDOW_TITLE, nullptr, nullptr);
     if (window == nullptr) {
         CERR(BM_ERR_WINDOW, err);
-        terminate(nullptr, nullptr, nullptr);
+        // terminate(nullptr, nullptr, nullptr);
+        terminate(nullptr, nullptr);
         return BM_ERR_WINDOW;
     }
 
@@ -118,13 +129,15 @@ int main() {
     err = glewInit();
     if (err != GLEW_OK) {
         CERR(BM_ERR_GLEW_INIT, err);
-        terminate(nullptr, nullptr, nullptr);
+        // terminate(nullptr, nullptr, nullptr);
+        terminate(nullptr, nullptr);
         return BM_ERR_GLEW_INIT;
     }
 
     err = coutAllInfo();
     if (err != 0) {
-        terminate(nullptr, nullptr, nullptr);
+        // terminate(nullptr, nullptr, nullptr);
+        terminate(nullptr, nullptr);
         return err;
     }
 
@@ -209,7 +222,8 @@ int main() {
     err = loadShaders(&programId, BM_SHADER_VERT_TRIANGULE, BM_SHADER_FRAG_TRIANGULE);
     if (err != 0) {
         CERR_MSG(BM_ERR_LOAD_SHADERS, err, "triangule program error");
-        terminate(nullptr, nullptr, nullptr);
+        // terminate(nullptr, nullptr, nullptr);
+        terminate(nullptr, nullptr);
         return BM_ERR_LINK_PROGRAM;
     }
 
@@ -217,16 +231,37 @@ int main() {
     err = loadTexture(&earthTextureId, BM_TEXTURE_EARTH);
     if (err != 0) {
         CERR_MSG(BM_ERR_LOAD_TEXTURE, err, "earth texture error");
-        terminate(&programId, nullptr, nullptr);
+        // terminate(&programId, nullptr, nullptr);
+        terminate(&programId, nullptr);
         return err;
     }
 
-    GLuint vbo = 0;
-    // sceneSingleTriangulesVBO(&vbo, sizeof(triangules), triangules.data());
-    sceneSingleTriangulesVBO(&vbo, sizeof(quad), quad.data());
+    GLuint quadVBO = 0;
+    // sceneVBO(&quadVBO, sizeof(triangules), triangules.data());
+    sceneVBO(&quadVBO, sizeof(quad), quad.data());
 
-    GLuint ebo = 0;
-    sceneSingleTriangulesEBO(&ebo, sizeof(indexes), indexes.data());
+    GLuint quadEBO = 0;
+    sceneEBO(&quadEBO, sizeof(indexes), indexes.data());
+
+    GLuint quadVAO = 0;
+    glGenVertexArrays(1, &quadVAO);
+    glBindVertexArray(quadVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadEBO);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex),
+        (const void*) offsetof(Vertex, color));
+
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_TRUE, sizeof(Vertex),
+        (const void*) offsetof(Vertex, uv));
+
+    glBindVertexArray(0);
 
     dtime.tick((float) glfwGetTime());
 
@@ -251,19 +286,15 @@ int main() {
         glUniform1f(TEX_EARTH, 0);
 
         // glBindBuffer(GL_ARRAY_BUFFER, trianguleBuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
+        // glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+        // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadEBO);
 
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex),
-            (const void*) offsetof(Vertex, color));
+        // glEnableVertexAttribArray(0);
+        // glEnableVertexAttribArray(1);
+        // glEnableVertexAttribArray(2);
 
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_TRUE, sizeof(Vertex),
-            (const void*) offsetof(Vertex, uv));
+        glBindVertexArray(quadVAO);
 
         glPointSize(10.0f);
         glLineWidth(10.0f);
@@ -282,11 +313,12 @@ int main() {
 
         glDrawElements(GL_TRIANGLES, (GLsizei) indexes.size() * 3, GL_UNSIGNED_INT, nullptr);
 
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        glDisableVertexAttribArray(2);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        // glDisableVertexAttribArray(0);
+        // glDisableVertexAttribArray(1);
+        // glDisableVertexAttribArray(2);
+        // glBindBuffer(GL_ARRAY_BUFFER, 0);
+        // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
         glUseProgram(0);
 
         glfwPollEvents();
@@ -303,7 +335,8 @@ int main() {
             camera.moveRight(-1 * dtime.delta());
     }
 
-    terminate(&programId, &vbo, &ebo);
+    // terminate(&programId, &quadVBO, &quadEBO);
+    terminate(&programId, &quadVAO);
 
     return 0;
 }

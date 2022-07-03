@@ -6,7 +6,7 @@
 #include "errors.hh"
 #include "scenes.hh"
 
-void sceneSingleTriangulesVBO(GLuint* vbo, GLsizeiptr size, const void* vertexBuffer) {
+void sceneVBO(GLuint* vbo, GLsizeiptr size, const void* vertexBuffer) {
     glGenBuffers(1, vbo);
 
     glBindBuffer(GL_ARRAY_BUFFER, *vbo);
@@ -15,7 +15,7 @@ void sceneSingleTriangulesVBO(GLuint* vbo, GLsizeiptr size, const void* vertexBu
     glBindBuffer(*vbo, 0);
 }
 
-void sceneSingleTriangulesEBO(GLuint* ebo, GLsizeiptr size, const void* elementBuffer) {
+void sceneEBO(GLuint* ebo, GLsizeiptr size, const void* elementBuffer) {
     glGenBuffers(1, ebo);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *ebo);
