@@ -6,7 +6,16 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
+struct Vertex {
+    glm::vec3 position;
+    glm::vec3 color;
+    glm::vec2 uv;
+};
+
 void sceneVBO(GLuint* vbo, GLsizeiptr size, const void* vertexBuffer);
 void sceneEBO(GLuint* ebo, GLsizeiptr size, const void* elementBuffer);
+
+void loadQuad(GLuint* vao, GLsizei* size);
+
 
 #endif

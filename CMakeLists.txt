@@ -13,7 +13,7 @@ target_sources(
         src/textures.cc
         src/fly_camera.cc
         src/delta.cc
-        src/scenes/single_triangule.cc
+        src/scenes.cc
 )
 
 target_include_directories(
