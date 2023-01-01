@@ -7,6 +7,7 @@
 #include <GL/glew.h>
 
 #define BM_TEXTURE_EARTH BM_ENV_TEXTURES_DIR BM_SLASH "earth_2k.jpg"
+#define BM_TEXTURE_CLOUDS BM_ENV_TEXTURES_DIR BM_SLASH "earth_clouds_2k.jpg"
 
 int loadTexture(GLuint* textureId, const char* textureFile);
 

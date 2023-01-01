@@ -1,6 +1,11 @@
 #version 330 core
 
 uniform sampler2D TEX_EARTH;
+
+uniform sampler2D TEX_CLOUDS;
+uniform float TIME;
+uniform vec2 CLOUDS_ROTATION_SPEED = vec2(0.008, 0.008);
+
 uniform vec3 LIGHT_DIRECTION;
 uniform float LIGHT_INTENSITY;
 
@@ -24,6 +29,9 @@ void main() {
     float specular = pow(max(dot(r, v), 0.0), alpha);
     specular = max(specular, 0.0) * specularIntensity;
 
-    vec3 texColor = texture(TEX_EARTH, uv).rgb;
-    outColor = vec4(texColor * LIGHT_INTENSITY * lambertian + specular, 1.0f);
+    vec3 earthColor = texture(TEX_EARTH, uv).rgb;
+    vec3 cloudsColor = texture(TEX_CLOUDS, uv + (TIME * CLOUDS_ROTATION_SPEED)).rgb;
+    vec3 texColor = earthColor + cloudsColor;
+    vec3 color = texColor * LIGHT_INTENSITY * lambertian + specular;
+    outColor = vec4(color, 1.0f);
 }

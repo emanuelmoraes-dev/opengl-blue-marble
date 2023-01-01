@@ -233,6 +233,14 @@ int main() {
         return err;
     }
 
+    GLuint cloudsTextureId = 0;
+    err = loadTexture(&cloudsTextureId, BM_TEXTURE_CLOUDS);
+    if (err != 0) {
+        CERR_MSG(BM_ERR_LOAD_TEXTURE, err, "clouds texture error");
+        terminate(&programId, nullptr);
+        return err;
+    }
+
     dtime.tick((float) glfwGetTime());
 
     glEnable(GL_CULL_FACE);
@@ -267,9 +275,16 @@ int main() {
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, earthTextureId);
+        GLint TEX_EARTH = glGetUniformLocation(programId, "TEX_EARTH");
+        glUniform1i(TEX_EARTH, 0);
 
-        GLuint TEX_EARTH = glGetUniformLocation(programId, "TEX_EARTH");
-        glUniform1f(TEX_EARTH, 0);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, cloudsTextureId);
+        GLint TEX_CLOUDS = glGetUniformLocation(programId, "TEX_CLOUDS");
+        glUniform1i(TEX_CLOUDS, 1);
+
+        GLint TIME = glGetUniformLocation(programId, "TIME");
+        glUniform1f(TIME, (float) glfwGetTime());
 
         // glBindBuffer(GL_ARRAY_BUFFER, trianguleBuffer);
 
