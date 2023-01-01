@@ -29,9 +29,11 @@ void genSphereVertexes(std::vector<Vertex>& vertexes, std::vector<glm::ivec3>& i
                 glm::cos(THETA)
             };
 
+            glm::vec3 normal = glm::normalize(position);
+
             glm::vec3 color { 1.0f, 1.0f, 1.0f };
             glm::vec2 uv { 1.0f - U, V };
-            const Vertex vertex {position, color, uv};
+            const Vertex vertex {position, normal, color, uv};
             vertexes.push_back(vertex);
 
             if (i < resolution - 1 && j < resolution - 1) {
@@ -76,10 +78,14 @@ void loadSphere(GLuint* vao, GLsizei* vn, GLsizei* in, GLuint resolution) {
 
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex),
-        (const void*) offsetof(Vertex, color));
+        (const void*) offsetof(Vertex, normal));
 
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_TRUE, sizeof(Vertex),
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex),
+        (const void*) offsetof(Vertex, color));
+
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_TRUE, sizeof(Vertex),
         (const void*) offsetof(Vertex, uv));
 
     glBindVertexArray(0);

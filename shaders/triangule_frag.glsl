@@ -2,6 +2,7 @@
 
 uniform sampler2D TEX_EARTH;
 
+in vec3 normal;
 // in vec3 color;
 in vec2 uv;
 
@@ -12,4 +13,5 @@ void main() {
 
     vec3 texColor = texture(TEX_EARTH, uv).rgb;
     outColor = vec4(texColor, 1.0f);
+    // outColor = vec4(normalize(normal), 1.0f);
 }

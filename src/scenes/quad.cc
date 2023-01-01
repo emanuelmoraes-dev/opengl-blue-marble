@@ -6,24 +6,28 @@ void loadQuad(GLuint* vao, GLsizei* vn, GLsizei* in) {
     std::array<Vertex, 4> quad {
         Vertex {
             glm::vec3 { -1.0f, -1.0f, 0.0f },
+            glm::vec3 {  0.0f,  0.0f, 1.0f},
             glm::vec3 {  1.0f,  0.0f, 0.0f },
             glm::vec2 {  0.0f,  0.0f }
         },
 
         Vertex {
             glm::vec3 {  1.0f, -1.0f, 0.0f },
+            glm::vec3 {  0.0f,  0.0f, 1.0f},
             glm::vec3 {  0.0f,  1.0f, 0.0f },
             glm::vec2 {  1.0f,  0.0f }
         },
 
         Vertex {
             glm::vec3 {  1.0f,  1.0f, 0.0f },
+            glm::vec3 {  0.0f,  0.0f, 1.0f},
             glm::vec3 {  1.0f,  0.0f, 0.0f },
             glm::vec2 {  1.0f,  1.0f }
         },
 
         Vertex {
             glm::vec3 { -1.0f,  1.0f, 0.0f },
+            glm::vec3 {  0.0f,  0.0f, 1.0f},
             glm::vec3 {  0.0f,  0.0f, 1.0f },
             glm::vec2 {  0.0f,  1.0f }
         }
@@ -55,10 +59,14 @@ void loadQuad(GLuint* vao, GLsizei* vn, GLsizei* in) {
 
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex),
-        (const void*) offsetof(Vertex, color));
+        (const void*) offsetof(Vertex, normal));
 
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_TRUE, sizeof(Vertex),
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex),
+        (const void*) offsetof(Vertex, color));
+
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_TRUE, sizeof(Vertex),
         (const void*) offsetof(Vertex, uv));
 
     glBindVertexArray(0);

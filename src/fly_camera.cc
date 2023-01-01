@@ -19,10 +19,12 @@ FlyCamera::FlyCamera() :
     _speed(4.0f),
     _sensitivity(0.1f) {}
 
-glm::mat4 FlyCamera::buildViewProjection() const {
-    const glm::mat4 view = glm::lookAt(_eye, _eye + _direction, _up);
-    const glm::mat4 projection = glm::perspective(_fov, _aspect, _near, _far);
-    return projection * view;
+glm::mat4 FlyCamera::buildView() const {
+    return glm::lookAt(_eye, _eye + _direction, _up);
+}
+
+glm::mat4 FlyCamera::buildProjection() const {
+    return glm::perspective(_fov, _aspect, _near, _far);
 }
 
 void FlyCamera::moveFoward(float amount) {

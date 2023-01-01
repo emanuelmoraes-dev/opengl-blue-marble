@@ -243,9 +243,15 @@ int main() {
 
         glUseProgram(programId);
 
-        const glm::mat4 modelViewProjection = camera.buildViewProjection() * model;
+        const glm::mat4 view = camera.buildView();
+        const glm::mat4 projection = camera.buildProjection();
+        const glm::mat4 modelViewProjection = projection * view * model;
         GLint MVP = glGetUniformLocation(programId, "MVP");
         glUniformMatrix4fv(MVP, 1, GL_FALSE, glm::value_ptr(modelViewProjection));
+
+        const glm::mat4 modelViewNormal = glm::inverse(glm::transpose(view * model));
+        GLint MV_NORMAL = glGetUniformLocation(programId, "MV_NORMAL");
+        glUniformMatrix4fv(MV_NORMAL, 1, GL_FALSE, glm::value_ptr(modelViewNormal));
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, earthTextureId);

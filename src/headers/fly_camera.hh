@@ -21,7 +21,8 @@ public:
     float _sensitivity;
 
     FlyCamera();
-    glm::mat4 buildViewProjection() const;
+    glm::mat4 buildView() const;
+    glm::mat4 buildProjection() const;
     void moveFoward(float amount);
     void moveRight(float amount);
     void look(float yaw, float pitch);
