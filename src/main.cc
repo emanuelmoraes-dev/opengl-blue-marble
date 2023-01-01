@@ -16,6 +16,7 @@
 #include "textures.hh"
 #include "fly_camera.hh"
 #include "delta.hh"
+#include "directional_light.hh"
 
 // struct Vertex {
 //     glm::vec3 position;
@@ -150,7 +151,11 @@ int main() {
 
     resized(window, BM_INIT_WINDOW_WIDTH, BM_INIT_WINDOW_HEIGHT);
 
-    glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+    DirectionalLight light;
+    light.direction = glm::vec3{ 0.0f, 0.0f, -1.0f };
+    light.intensity = 1.0f;
 
     // const glm::mat4 modelViewProjection = buildModelViewProjection();
     const glm::mat4 identity = glm::identity<glm::mat4>();
@@ -246,12 +251,19 @@ int main() {
         const glm::mat4 view = camera.buildView();
         const glm::mat4 projection = camera.buildProjection();
         const glm::mat4 modelViewProjection = projection * view * model;
-        GLint MVP = glGetUniformLocation(programId, "MVP");
+        const GLint MVP = glGetUniformLocation(programId, "MVP");
         glUniformMatrix4fv(MVP, 1, GL_FALSE, glm::value_ptr(modelViewProjection));
 
         const glm::mat4 modelViewNormal = glm::inverse(glm::transpose(view * model));
-        GLint MV_NORMAL = glGetUniformLocation(programId, "MV_NORMAL");
+        const GLint MV_NORMAL = glGetUniformLocation(programId, "MV_NORMAL");
         glUniformMatrix4fv(MV_NORMAL, 1, GL_FALSE, glm::value_ptr(modelViewNormal));
+
+        const glm::vec4 lightDirection = view * glm::vec4{light.direction, 0.0f};
+        const GLint LIGHT_DIRECTION = glGetUniformLocation(programId, "LIGHT_DIRECTION");
+        glUniform3fv(LIGHT_DIRECTION, 1, glm::value_ptr(lightDirection));
+
+        const GLint LIGHT_INTENSITY = glGetUniformLocation(programId, "LIGHT_INTENSITY");
+        glUniform1f(LIGHT_INTENSITY, light.intensity);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, earthTextureId);
