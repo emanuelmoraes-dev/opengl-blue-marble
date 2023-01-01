@@ -17,6 +17,7 @@
 #include "fly_camera.hh"
 #include "delta.hh"
 #include "directional_light.hh"
+#include "fs.hh"
 
 // struct Vertex {
 //     glm::vec3 position;
@@ -109,7 +110,14 @@ void resized(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, (GLsizei) width, (GLsizei) height);
 }
 
-int main() {
+int main(int argc, const char* argv[]) {
+    std::string exeDir;
+
+    if (argc < 0)
+        exeDir = ".";
+    else
+        exeDir = dir(argv[0]);
+
     int err = 0;
 
     err = glfwInit();
@@ -216,7 +224,9 @@ int main() {
     loadSphere(&sphereVAO, &sphereVN, &sphereIN, 50);
 
     GLuint programId = 0;
-    err = loadShaders(&programId, BM_SHADER_VERT_TRIANGULE, BM_SHADER_FRAG_TRIANGULE);
+    std::string vertShader = join(exeDir.c_str(), BM_SHADER_VERT_TRIANGULE);
+    std::string fragShader = join(exeDir.c_str(), BM_SHADER_FRAG_TRIANGULE);
+    err = loadShaders(&programId, vertShader.c_str(), fragShader.c_str());
     if (err != 0) {
         CERR_MSG(BM_ERR_LOAD_SHADERS, err, "triangule program error");
         // terminate(nullptr, nullptr, nullptr);
@@ -225,7 +235,8 @@ int main() {
     }
 
     GLuint earthTextureId = 0;
-    err = loadTexture(&earthTextureId, BM_TEXTURE_EARTH);
+    std::string texEarth = join(exeDir.c_str(), BM_TEXTURE_EARTH);
+    err = loadTexture(&earthTextureId, texEarth.c_str());
     if (err != 0) {
         CERR_MSG(BM_ERR_LOAD_TEXTURE, err, "earth texture error");
         // terminate(&programId, nullptr, nullptr);
@@ -234,7 +245,8 @@ int main() {
     }
 
     GLuint cloudsTextureId = 0;
-    err = loadTexture(&cloudsTextureId, BM_TEXTURE_CLOUDS);
+    std::string texClouds = join(exeDir.c_str(), BM_TEXTURE_CLOUDS);
+    err = loadTexture(&cloudsTextureId, texClouds.c_str());
     if (err != 0) {
         CERR_MSG(BM_ERR_LOAD_TEXTURE, err, "clouds texture error");
         terminate(&programId, nullptr);

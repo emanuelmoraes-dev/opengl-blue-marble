@@ -20,8 +20,8 @@ To be able to compile the source code, follow the instructions below
   * Note: If you use Windows, you can download [here](https://github.com/emanuelmoraes-dev/opengl-blue-marble/releases/download/dependencies/glew-2.1.0-win32.zip)
 
 ### Configuring Environment
-Copy the file "env/env.example.hh" in "env/debug/env.hh" and "env/release/env.hh" with the configuration for debug and release environments respectively
+Rename the files "env/debug/env.example.hh" and "env/release/env.example.hh" to "env/debug/env.hh" and "env/release/env.hh" (respectively) with the environments configurations
 
-#### env.hh
-* BM_ENV_SHADERS_DIR: Folder path that has the shading source
-* BM_ENV_TEXTURES_DIR: Folder path that has the textures
+#### env/debug/env.hh and env/release/env.example.hh
+* BM_ENV_SHADERS_DIR: Relative path (from the executable folder) that has the shading source
+* BM_ENV_TEXTURES_DIR: Relative path (from the executable folder) that has the textures
