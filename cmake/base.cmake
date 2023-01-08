@@ -6,4 +6,4 @@ add_library(
 include(cmake/base/compilers.cmake)
 include(cmake/base/warnings.cmake)
 include(cmake/base/optimizations.cmake)
-include(cmake/base/link.cmake)
+include(cmake/base/libs.cmake)
