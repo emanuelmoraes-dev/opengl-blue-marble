@@ -31,5 +31,6 @@ target_compile_features(
 )
 
 include(cmake/base.cmake)
+include(cmake/os.cmake)
 include(cmake/debug.cmake)
 include(cmake/release.cmake)

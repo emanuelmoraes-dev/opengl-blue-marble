@@ -9,4 +9,8 @@ target_include_directories(
         env/debug
 )
 
-include(cmake/debug/link.cmake)
+target_link_libraries(
+    BlueMarble
+    PRIVATE
+        debug debug_env
+)

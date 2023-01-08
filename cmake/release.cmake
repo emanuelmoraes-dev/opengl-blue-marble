@@ -9,4 +9,8 @@ target_include_directories(
         env/release
 )
 
-include(cmake/release/link.cmake)
+target_link_libraries(
+    BlueMarble
+    PRIVATE
+        optimized release_env
+)
